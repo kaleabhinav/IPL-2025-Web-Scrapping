@@ -1,0 +1,8 @@
+# Ignore the 'venv' directory
+ipl-scrapping/
+
+# Ignore the 'scrapped_data' folder (if you want to ignore it)
+Scrapped Info/
+
+# Ignore Python bytecode files
+*.pyc
