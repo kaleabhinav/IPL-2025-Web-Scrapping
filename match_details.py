@@ -1,6 +1,8 @@
 from utils import get_match_soups, get_ball_by_ball_commentary, get_match_metadata
 import pandas as pd
 import os
+# import random
+import time
 
 # Corrected the print statement
 print("Please provide a valid URL: ")
@@ -36,8 +38,8 @@ df2['batting_team'] = whos_second_inning
 result = pd.concat([df1, df2], axis=0, ignore_index=True)
 
 # Making a folder to store the info
-os.makedirs("scarpped_info/match_details", exist_ok=True)
+os.makedirs("scraped_info/match_details", exist_ok=True)
 
 # Save the result to a CSV file
-result.to_csv(f"scarpped_info/match_details/{'_'.join(match_metadata[:3])}.csv", index=False)
+result.to_csv(f"scraped_info/match_details/{'_'.join(match_metadata[:3])}.csv", index=False)
 

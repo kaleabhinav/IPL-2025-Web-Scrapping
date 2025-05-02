@@ -1,14 +1,17 @@
 from bs4 import BeautifulSoup
 import requests
-from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 import time
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 import pandas as pd
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from bs4 import BeautifulSoup
+import time
 
 def get_teams_information(url):
     try:
@@ -107,20 +110,32 @@ def merge_data_for_team_players(urls):
         dfs.append(df)
 
     # Merge all data into one DataFrame
-    merged_df = pd.concat(dfs).drop_duplicates().reset_index(drop=True)
+    merged_df = pd.concat(dfs).reset_index(drop=True)
     return merged_df
 
 def get_match_soups(url):
-    driver = webdriver.Chrome()
+    options = Options()
+    options.add_argument("--headless")  # Run headless
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_argument("--window-size=1920,1080")  # Optional: helps render full page
+
+    # Pretend to be a real user
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+
+    driver = webdriver.Chrome(options=options)
     driver.get(url)
 
-    # Use explicit wait instead of sleep
-    wait = WebDriverWait(driver, 15)
-    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.ap-inner-tb-click")))
-
-    inning_tabs = driver.find_elements(By.CSS_SELECTOR, "a.ap-inner-tb-click")
+    try:
+        wait = WebDriverWait(driver, 15)
+        inning_tabs = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.ap-inner-tb-click")))
+    except Exception:
+        driver.quit()
+        raise ValueError("Inning tabs not found or page did not load in time.")
 
     if len(inning_tabs) < 2:
+        driver.quit()
         raise ValueError("Less than two innings tabs found.")
 
     # First innings
@@ -140,7 +155,6 @@ def get_match_soups(url):
     driver.quit()
 
     return first_inning_soup, second_inning_soup, first_team, second_team
-
 
 def get_match_metadata(soup):
     """
