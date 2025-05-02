@@ -36,8 +36,8 @@ df2['batting_team'] = whos_second_inning
 result = pd.concat([df1, df2], axis=0, ignore_index=True)
 
 # Making a folder to store the info
-os.makedirs("Scrapped Info/match_details", exist_ok=True)
+os.makedirs("scarpped_info/match_details", exist_ok=True)
 
 # Save the result to a CSV file
-result.to_csv(f"Scrapped Info/match_details/{'_'.join(match_metadata[:3])}.csv", index=False)
+result.to_csv(f"scarpped_info/match_details/{'_'.join(match_metadata[:3])}.csv", index=False)
 

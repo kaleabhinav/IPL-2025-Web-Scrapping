@@ -6,3 +6,5 @@ Scrapped Info/
 
 # Ignore Python bytecode files
 *.pyc
+
+*.csv

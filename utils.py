@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import pandas as pd
 
@@ -108,32 +110,37 @@ def merge_data_for_team_players(urls):
     merged_df = pd.concat(dfs).drop_duplicates().reset_index(drop=True)
     return merged_df
 
-
 def get_match_soups(url):
-
-    """
-    Extract the html code for both the innings
-    Input : Match URL
-    Output : Provides first innging soup, second innging soup, who played the first innging, who played the second innging
-    """
-    
     driver = webdriver.Chrome()
     driver.get(url)
-    tag_to_switch_innings = driver.find_elements(By.XPATH, '//a[@href="javascript:void(0);"]')
-    first_inning = tag_to_switch_innings[11]
-    whos_first_inning = first_inning.text
-    first_inning.click()
-    time.sleep(3)
+
+    # Use explicit wait instead of sleep
+    wait = WebDriverWait(driver, 15)
+    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.ap-inner-tb-click")))
+
+    inning_tabs = driver.find_elements(By.CSS_SELECTOR, "a.ap-inner-tb-click")
+
+    if len(inning_tabs) < 2:
+        raise ValueError("Less than two innings tabs found.")
+
+    # First innings
+    first_tab = inning_tabs[0]
+    first_team = first_tab.text.strip()
+    first_tab.click()
+    time.sleep(2)
     first_inning_soup = BeautifulSoup(driver.page_source, "html.parser")
-    second_inning = tag_to_switch_innings[12]
-    whos_second_inning = second_inning.text
-    second_inning.click()
-    time.sleep(3)
+
+    # Second innings
+    second_tab = inning_tabs[1]
+    second_team = second_tab.text.strip()
+    second_tab.click()
+    time.sleep(2)
     second_inning_soup = BeautifulSoup(driver.page_source, "html.parser")
 
     driver.quit()
 
-    return first_inning_soup,second_inning_soup, whos_first_inning, whos_second_inning
+    return first_inning_soup, second_inning_soup, first_team, second_team
+
 
 def get_match_metadata(soup):
     """
