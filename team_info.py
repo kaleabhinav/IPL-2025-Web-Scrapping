@@ -8,7 +8,7 @@ from config import StaticConfig
 
 url_info = StaticConfig()
 
-directory = "Scrapped Info/teams_info"
+directory = "scraped_info/teams_info"
 os.makedirs(directory, exist_ok=True)
 
 df = get_teams_information(url_info.website_url)
