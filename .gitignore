@@ -1,11 +1,15 @@
 # Ignore the 'venv' directory
 ipl-scrapping/
 
-# Ignore the 'scrapped_data' folder (if you want to ignore it)
+# Ignore the 'scrapped_data' folder -> Just to not put the scrapped data into github
 Scrapped Info/
 
 # Ignore Python bytecode files
 *.pyc
 
+# Ignore csv's and notebooks 
 *.csv
 *.ipynb
+
+# Ignore cache
+__pycache__
