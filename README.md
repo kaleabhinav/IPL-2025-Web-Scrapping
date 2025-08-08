@@ -1,7 +1,7 @@
 # IPL‑2025‑Web‑Scrapping
 
 A set of Python scripts to scrape comprehensive IPL 2025 data—covering team details, player rosters, and match statistics—and ready the results for upload to your Kaggle dataset.
-
+The output of this repo is stored here : [kaggle](https://www.kaggle.com/datasets/kaleabhinav/ipl-2025-scrapped-data)
 ##  Overview
 
 This repository streamlines end-to-end data collection for the 18th Indian Premier League (IPL 2025), including:
